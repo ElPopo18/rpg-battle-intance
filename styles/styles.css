@@ -8,3 +8,11 @@
     margin: 0;
     padding: 0;
 }
+
+.container {
+    margin: 10px;
+}
+
+.container button {
+    padding: 6px 12px;
+}
