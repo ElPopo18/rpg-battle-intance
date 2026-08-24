@@ -15,7 +15,13 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     function getAttackDamage (min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        const critChance = Math.floor(Math.random() * (8 - 1 + 1)) + 1;
+
+        if (critChance == 8) {
+            return (Math.floor(Math.random() * (max - min + 1)) + min) * 2;
+        } else {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
     }
 
     Character.prototype.attack = function(){
