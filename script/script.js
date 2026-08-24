@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    function Character(name, health, weapon, secWeapon){
+    function Player(name, health, weapon, secWeapon){
         this.name = name;
         this.health = health;
         this.weapon = weapon;
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!new.target) {
             throw Error("You must use the 'new' operator to call the constructor");
         };
-        Character.call(this, name, health, weapon)
+        Player.call(this, name, health, weapon)
     };
 
     function getAttackDamage (min, max) {
@@ -24,29 +24,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    Character.prototype.attack = function(){
+    function damageCalculation (attack, characterAttack){
+        if (characterAttack == true){
+            goblin.health -= attack;
+            console.log(`${gladiator.name} did ${attack} damage to the ${goblin.name}`);
+            goblin.health = goblin.health < 0 ? 0 : goblin.health;
+            console.log(`Goblin's health: ${goblin.health}`);
+        } else {
+            gladiator.health -= attack;
+            console.log(`${goblin.name} did ${attack} damage to the ${gladiator.name}`);
+            gladiator.health = gladiator.health < 0 ? 0 : gladiator.health;
+            console.log(`Gladiator's health: ${gladiator.health}`);
+        }
+    }
+
+    Player.prototype.attack = function(){
         const minimumAttack = 57;
         const maximumAttack = 74
-        const attackDamage = getAttackDamage(minimumAttack, maximumAttack);
+        let attackDamage = getAttackDamage(minimumAttack, maximumAttack);
+        const playerAttack = true;
 
-        console.log(attackDamage);
+        damageCalculation(attackDamage, playerAttack)
     };
 
-    Character.prototype.info = function(){
-        return `A ${this.name} with ${this.health}HP using a ${this.weapon} and a ${this.secWeapon}!`;
+    Enemy.prototype.attack = function(){
+        const minimumAttack = 50;
+        const maximumAttack = 65
+        let attackDamage = getAttackDamage(minimumAttack, maximumAttack);
+        const playerAttack = false;
+
+        damageCalculation(attackDamage, playerAttack)
     };
 
-    Enemy.prototype.info = function(){
-        return `A ${this.name} with ${this.health}HP using a ${this.weapon}!`;
+    function resetBattle() {
+        goblin.health = 500;
+        gladiator.health = 700;
     };
 
     const goblin = new Enemy("Goblin", 500, "knife");
-    const gladiator = new Character("Gladiator", 700, "Iron Sword", "Iron Shield");
+    const gladiator = new Player("Gladiator", 700, "Iron Sword", "Iron Shield");
 
     const attack = document.querySelector(".attack-button");
     attack.addEventListener("click", (e) => {
-        gladiator.attack();
-        console.log(goblin.info());
-        console.log(gladiator.info());
+        if (goblin.health <= 0 && gladiator.health > 0){
+            console.log(`The ${goblin.name} is dead! ${gladiator.name} won!!`);
+            resetBattle();
+        } else if (gladiator.health <= 0 && goblin.health > 0) {
+            console.log(`The ${gladiator.name} is dead! ${goblin.name} won...`);
+            resetBattle();
+        } else {
+            gladiator.attack();
+            goblin.attack();
+        }
     })
 })
